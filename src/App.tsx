@@ -43,7 +43,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#06070a] text-slate-100 flex flex-col font-sans selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-purple-600 selection:text-white">
       {/* Header with Child Selector & PWA Installer */}
       <Header
         family={family}
@@ -55,13 +55,13 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:px-8 space-y-8">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-900">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200/80">
           <button
             onClick={() => setActiveTab('control')}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'control'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                : 'bg-white/80 text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200/80'
             }`}
           >
             <Shield className="w-4 h-4" />
@@ -70,37 +70,37 @@ export function App() {
 
           <button
             onClick={() => setActiveTab('telemetry')}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'telemetry'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                : 'bg-white/80 text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200/80'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <Sparkles className="w-4 h-4 text-cyan-500" />
             <span>Telemetría GCP AI</span>
           </button>
 
           <button
             onClick={() => setActiveTab('policy')}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'policy'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                : 'bg-white/80 text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200/80'
             }`}
           >
-            <Cpu className="w-4 h-4 text-indigo-400" />
+            <Cpu className="w-4 h-4 text-indigo-500" />
             <span>Políticas & Allowlist</span>
           </button>
 
           <button
             onClick={() => setActiveTab('audit')}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'audit'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                : 'bg-white/80 text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200/80'
             }`}
           >
-            <Layers className="w-4 h-4 text-amber-400" />
+            <Layers className="w-4 h-4 text-amber-500" />
             <span>Auditoría C&C</span>
           </button>
         </div>
@@ -145,19 +145,19 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-slate-900 py-8 px-4 sm:px-8 text-center text-xs text-slate-500">
+      <footer className="mt-12 border-t border-slate-200 py-8 px-4 sm:px-8 text-center text-xs text-slate-500 bg-white/60">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-purple-400" />
+          <div className="flex items-center gap-2 font-medium">
+            <Shield className="w-4 h-4 text-purple-600" />
             <span>ZentryOS Parent Dashboard • Gobernanza Activa de la Atención</span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-400">
+          <div className="flex items-center gap-4 text-slate-600 font-semibold">
             <a
               href="https://github.com/j-angel-borges/zentry-parent-dashboard"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-purple-300 transition-colors flex items-center gap-1"
+              className="hover:text-purple-600 transition-colors flex items-center gap-1"
             >
               <span>GitHub Repo</span>
               <ExternalLink className="w-3 h-3" />
@@ -167,14 +167,14 @@ export function App() {
               href="https://github.com/j-angel-borges/zentry-ssot"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-purple-300 transition-colors flex items-center gap-1"
+              className="hover:text-purple-600 transition-colors flex items-center gap-1"
             >
               <span>SSOT Canon</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>
 
-          <div>
+          <div className="font-medium text-slate-500">
             <span>GCP Firestore & Cloud Pub/Sub Stack • PWA Standalone</span>
           </div>
         </div>

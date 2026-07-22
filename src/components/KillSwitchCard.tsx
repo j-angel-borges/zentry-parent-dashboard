@@ -15,7 +15,7 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
 
   if (!device) {
     return (
-      <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 text-center text-slate-400">
+      <div className="p-6 rounded-2xl bg-white/80 border border-slate-200 text-center text-slate-500 font-medium">
         No hay dispositivo activo configurado para {child.alias}.
       </div>
     );
@@ -45,16 +45,16 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 transition-all duration-500 border backdrop-blur-2xl shadow-2xl ${
+      className={`relative overflow-hidden rounded-2xl p-6 sm:p-8 transition-all duration-300 border backdrop-blur-2xl shadow-sm ${
         isLocked
-          ? 'bg-gradient-to-br from-rose-950/70 via-slate-950/90 to-red-950/50 border-rose-500/40 shadow-rose-950/40'
-          : 'bg-gradient-to-br from-slate-900/90 via-indigo-950/40 to-slate-950/90 border-indigo-500/30 shadow-indigo-950/30'
+          ? 'bg-gradient-to-br from-rose-50/90 via-white/95 to-red-50/80 border-rose-200 shadow-rose-500/10'
+          : 'bg-gradient-to-br from-white/90 via-purple-50/50 to-indigo-50/70 border-indigo-200/80 shadow-indigo-500/10'
       }`}
     >
-      {/* Background glow effects */}
+      {/* Soft Light Background Glow */}
       <div
         className={`absolute -top-24 -right-24 w-72 h-72 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
-          isLocked ? 'bg-rose-600/20' : 'bg-cyan-500/15'
+          isLocked ? 'bg-rose-400/15' : 'bg-purple-400/15'
         }`}
       />
 
@@ -63,41 +63,41 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
         <div className="space-y-3 max-w-xl">
           <div className="flex items-center gap-3">
             <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wider border ${
                 isLocked
-                  ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
-                  : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                  ? 'bg-rose-100/90 text-rose-700 border-rose-300'
+                  : 'bg-emerald-100/90 text-emerald-800 border-emerald-300'
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isLocked ? 'bg-rose-500 animate-ping' : 'bg-emerald-400 animate-pulse'
+                  isLocked ? 'bg-rose-600 animate-ping' : 'bg-emerald-500 animate-pulse'
                 }`}
               />
               {isLocked ? 'ESTADO: BLOQUEADO (LockTask Activo)' : 'ESTADO: LIBRE REGULADO'}
             </span>
 
             {latency !== null && (
-              <span className="text-xs text-slate-400 flex items-center gap-1 bg-slate-950/60 px-2.5 py-1 rounded-xl border border-slate-800">
-                <Zap className="w-3.5 h-3.5 text-amber-400" />
-                Latencia C&C: <strong className="text-amber-300">{latency}ms</strong>
+              <span className="text-xs text-slate-600 flex items-center gap-1 bg-white/90 px-2.5 py-1 rounded-lg border border-slate-200 font-semibold shadow-xs">
+                <Zap className="w-3.5 h-3.5 text-amber-500" />
+                Latencia C&C: <strong className="text-slate-900">{latency}ms</strong>
               </span>
             )}
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
             Kill-Switch Remoto ({child.alias})
           </h2>
 
-          <p className="text-sm text-slate-300 leading-relaxed">
+          <p className="text-sm text-slate-600 leading-relaxed font-normal">
             {isLocked ? (
               <>
-                El dispositivo <strong className="text-white">{device.model}</strong> está deshabilitado. La pantalla nativa muestra el bloqueo de ZentryOS con motivo:{' '}
-                <span className="text-rose-300 italic font-semibold">"{device.activePolicy.lockReason || lockReason}"</span>.
+                El dispositivo <strong className="text-slate-900">{device.model}</strong> está deshabilitado. La pantalla nativa muestra el bloqueo de ZentryOS con motivo:{' '}
+                <span className="text-rose-700 italic font-semibold">"{device.activePolicy.lockReason || lockReason}"</span>.
               </>
             ) : (
               <>
-                Envía una orden instantánea vía Firebase Firestore. El dispositivo responderá aplicando <code className="text-indigo-300 bg-indigo-950/60 px-1 py-0.5 rounded">ZentryPolicyManager.startLockTask()</code> en tiempo real.
+                Envía una orden instantánea vía Firebase Firestore. El dispositivo responderá aplicando <code className="text-purple-700 bg-purple-50 px-1 py-0.5 rounded font-mono text-xs border border-purple-100">ZentryPolicyManager.startLockTask()</code> en tiempo real.
               </>
             )}
           </p>
@@ -109,52 +109,52 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
                 value={lockReason}
                 onChange={(e) => setLockReason(e.target.value)}
                 placeholder="Motivo del bloqueo (ej: Hora de cenar, Tarea finalizada)"
-                className="flex-1 bg-slate-950/80 border border-slate-700/80 text-white placeholder-slate-500 px-4 py-2.5 rounded-2xl text-xs sm:text-sm focus:outline-none focus:border-purple-500 transition-colors"
+                className="flex-1 bg-white border border-slate-200 text-slate-900 placeholder-slate-400 px-4 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all font-medium"
               />
-              <div className="flex items-center gap-1 text-[11px] text-slate-400 px-1">
-                <Clock className="w-3 h-3 text-purple-400" />
+              <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium px-1">
+                <Clock className="w-3.5 h-3.5 text-purple-600" />
                 Sincronización en &lt; 200ms
               </div>
             </div>
           )}
 
           {feedback && (
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-500/30 p-2.5 rounded-2xl animate-fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl animate-fade-in">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <span>{feedback}</span>
             </div>
           )}
         </div>
 
         {/* Big Action Button */}
-        <div className="w-full lg:w-auto flex flex-col items-center gap-3">
+        <div className="w-full lg:w-auto flex flex-col items-center gap-2.5">
           <button
             onClick={handleToggleLock}
             disabled={loading}
-            className={`w-full sm:w-auto min-w-[220px] px-8 py-5 rounded-3xl font-extrabold text-base tracking-wide flex items-center justify-center gap-3 transition-all duration-300 transform active:scale-95 shadow-xl cursor-pointer ${
+            className={`w-full sm:w-auto min-w-[220px] px-8 py-4.5 rounded-xl font-extrabold text-sm tracking-wide flex items-center justify-center gap-3 transition-all duration-200 transform active:scale-95 shadow-md cursor-pointer ${
               isLocked
-                ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 shadow-emerald-500/25'
-                : 'bg-gradient-to-r from-rose-600 via-red-600 to-pink-600 hover:from-rose-500 hover:to-red-500 text-white shadow-rose-600/35'
+                ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                : 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white shadow-rose-600/20'
             } ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? (
               <>
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
                 <span>Transmitiendo orden...</span>
               </>
             ) : isLocked ? (
               <>
-                <Unlock className="w-6 h-6" />
+                <Unlock className="w-5 h-5" />
                 <span>DESBLOQUEAR AHORA</span>
               </>
             ) : (
               <>
-                <Lock className="w-6 h-6" />
+                <Lock className="w-5 h-5" />
                 <span>BLOQUEAR AL INSTANTE</span>
               </>
             )}
           </button>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className="text-[11px] text-slate-500 font-semibold">
             Canal C&C Firestore • No-repudio por Parent UID
           </span>
         </div>
