@@ -31,7 +31,7 @@ export const DeviceStatusCard: React.FC<DeviceStatusCardProps> = ({ device, chil
               </span>
             </h3>
             <p className="text-xs text-slate-500 font-medium">
-              Dispositivo Vinculado a {child.alias} • Android API {device.osApiLevel}
+              Dispositivo Real Vinculado a {child.alias} • Android API {device.osApiLevel}
             </p>
           </div>
         </div>
@@ -43,12 +43,14 @@ export const DeviceStatusCard: React.FC<DeviceStatusCardProps> = ({ device, chil
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-        {/* Battery */}
+        {/* Battery Level (Fidedigno: reads strictly from Firestore or shows --) */}
         <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-3">
           <BatteryCharging className="w-5 h-5 text-emerald-600 flex-shrink-0" />
           <div>
-            <span className="text-slate-500 text-[10px] uppercase font-bold block">Batería</span>
-            <span className="text-slate-900 font-extrabold text-sm">{device.batteryLevel}%</span>
+            <span className="text-slate-500 text-[10px] uppercase font-bold block">Batería Dispositivo</span>
+            <span className="text-slate-900 font-extrabold text-sm">
+              {device.batteryLevel !== undefined ? `${device.batteryLevel}%` : '-- (Esperando reporte)'}
+            </span>
           </div>
         </div>
 
@@ -56,7 +58,7 @@ export const DeviceStatusCard: React.FC<DeviceStatusCardProps> = ({ device, chil
         <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-3">
           <Wifi className="w-5 h-5 text-cyan-600 flex-shrink-0" />
           <div>
-            <span className="text-slate-500 text-[10px] uppercase font-bold block">Conexión</span>
+            <span className="text-slate-500 text-[10px] uppercase font-bold block">Conexión Real</span>
             <span className="text-emerald-700 font-extrabold text-xs uppercase">{device.networkStatus}</span>
           </div>
         </div>
@@ -65,8 +67,8 @@ export const DeviceStatusCard: React.FC<DeviceStatusCardProps> = ({ device, chil
         <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-3">
           <Cpu className="w-5 h-5 text-purple-600 flex-shrink-0" />
           <div>
-            <span className="text-slate-500 text-[10px] uppercase font-bold block">Política v{device.policyVersion}</span>
-            <span className="text-purple-700 font-bold text-xs">Sincronizada</span>
+            <span className="text-slate-500 text-[10px] uppercase font-bold block">Política Firestore</span>
+            <span className="text-purple-700 font-bold text-xs">v{device.policyVersion} Sincronizada</span>
           </div>
         </div>
 
@@ -74,7 +76,7 @@ export const DeviceStatusCard: React.FC<DeviceStatusCardProps> = ({ device, chil
         <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-3">
           <HardDrive className="w-5 h-5 text-amber-600 flex-shrink-0" />
           <div>
-            <span className="text-slate-500 text-[10px] uppercase font-bold block">Último Latido</span>
+            <span className="text-slate-500 text-[10px] uppercase font-bold block">Último Timestamp</span>
             <span className="text-slate-800 font-semibold text-xs">{formattedTime}</span>
           </div>
         </div>

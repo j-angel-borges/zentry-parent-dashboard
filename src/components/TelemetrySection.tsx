@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrainCircuit, Sparkles, Clock, Heart, Award, CheckCircle2 } from 'lucide-react';
+import { BrainCircuit, Sparkles, Clock, Heart, Award, CheckCircle2, AlertCircle } from 'lucide-react';
 import type { TelemetryDaily, Child } from '../types/zentry';
 
 interface TelemetrySectionProps {
@@ -8,10 +8,34 @@ interface TelemetrySectionProps {
 }
 
 export const TelemetrySection: React.FC<TelemetrySectionProps> = ({ telemetry, child }) => {
-  if (!telemetry) {
+  const hasAppUsage = telemetry && Object.keys(telemetry.appUsageMinutes).length > 0;
+
+  if (!telemetry || !hasAppUsage) {
     return (
-      <div className="p-8 rounded-2xl bg-white/80 border border-slate-200 text-center text-slate-500 font-medium">
-        No hay datos de telemetría registrados hoy para {child.alias}.
+      <div className="p-8 rounded-2xl bg-white/90 border border-slate-200 backdrop-blur-xl space-y-4 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
+            <BrainCircuit className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-lg font-extrabold text-slate-900">
+              Telemetría Real GCP (Sin datos simulados)
+            </h3>
+            <p className="text-xs text-slate-500 font-medium">
+              Lectura en vivo de Firestore: <code className="text-purple-700 font-mono">telemetry_daily/dev_redmi9_mateo_YYYYMMDD</code>
+            </p>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200/90 text-xs text-amber-900 font-medium space-y-2">
+          <div className="flex items-center gap-2 font-bold text-amber-800">
+            <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+            <span>Esperando la primera transmisión de métricas reales desde el Redmi 9 de {child.alias}:</span>
+          </div>
+          <p className="leading-relaxed pl-6">
+            Para mantener absoluta fidelidad con la información real, no se muestran reportes ni gráficos inventados. A medida que {child.alias} utilice el Redmi 9 físico y el launcher transmita los eventos a GCP Pub/Sub y BigQuery, los datos consolidados aparecerán automáticamente en esta vista.
+          </p>
+        </div>
       </div>
     );
   }
@@ -29,7 +53,7 @@ export const TelemetrySection: React.FC<TelemetrySectionProps> = ({ telemetry, c
           </div>
           <div>
             <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-              Telemetría Cognitiva y Reporte GCP AI
+              Telemetría Cognitiva y Reporte GCP AI (Real)
             </h3>
             <p className="text-xs text-slate-500 font-medium">
               Procesado en streaming por GCP Pub/Sub & BigQuery • Síntesis Vertex AI Gemini
@@ -84,8 +108,8 @@ export const TelemetrySection: React.FC<TelemetrySectionProps> = ({ telemetry, c
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Índice Cognitivo / Ánimo</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-emerald-700">{telemetry.sentimentIndex}%</span>
-              <span className="text-xs text-emerald-800 font-bold">Óptimo / Enfocado</span>
+              <span className="text-2xl font-black text-emerald-700">{telemetry.sentimentIndex ?? '--'}%</span>
+              <span className="text-xs text-emerald-800 font-bold">Óptimo</span>
             </div>
           </div>
         </div>
@@ -96,7 +120,7 @@ export const TelemetrySection: React.FC<TelemetrySectionProps> = ({ telemetry, c
         <div className="p-6 rounded-2xl bg-white/80 border border-slate-200/90 backdrop-blur-xl space-y-4 shadow-xs">
           <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <Clock className="w-4 h-4 text-cyan-600" />
-            Distribución de Tiempo en Pantalla (Minutos)
+            Distribución de Tiempo en Pantalla Real (Minutos)
           </h4>
 
           <div className="space-y-3.5 pt-2">

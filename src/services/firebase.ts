@@ -27,7 +27,6 @@ import {
   INITIAL_CHILDREN,
   INITIAL_DEVICES,
   INITIAL_POLICIES,
-  INITIAL_TELEMETRY,
 } from './mockData';
 
 // REAL Firebase Config for user's GCP/Firebase Project: zentryos
@@ -52,7 +51,7 @@ class RealZentryStore {
   private selectedChildId: string = INITIAL_CHILDREN[0].id;
   private devices: Record<string, Device> = { ...INITIAL_DEVICES };
   private policies: Record<string, Policy> = { ...INITIAL_POLICIES };
-  private telemetry: Record<string, TelemetryDaily> = { ...INITIAL_TELEMETRY };
+  private telemetry: Record<string, TelemetryDaily> = {};
   private commands: Command[] = [];
   private listeners: Set<Listener> = new Set();
   private lastLatencyMs: number | null = null;
@@ -130,57 +129,52 @@ class RealZentryStore {
       const familyRef = doc(db, 'families', this.family.id);
       const familySnap = await getDoc(familyRef);
 
-      // Seed initial schema if first run in Firestore project zentryos
+      // Seed single real child & device if doc doesn't exist in Firestore zentryos yet
       if (!familySnap.exists()) {
         await setDoc(familyRef, {
           parentUids: this.family.parentUids,
           displayName: this.family.displayName,
-          advisorId: this.family.advisorId || 'adv_lima_042',
           plan: this.family.plan,
           createdAt: serverTimestamp(),
         });
 
-        // Seed children
-        for (const child of INITIAL_CHILDREN) {
-          await setDoc(doc(db, 'families', this.family.id, 'children', child.id), {
-            alias: child.alias,
-            birthYear: child.birthYear,
-            cohort: child.cohort,
-            gradeMinedu: child.gradeMinedu,
-            activeDeviceId: child.activeDeviceId,
-            avatarUrl: child.avatarUrl,
-          });
-        }
+        // Seed single real child: Mateo
+        const mateo = INITIAL_CHILDREN[0];
+        await setDoc(doc(db, 'families', this.family.id, 'children', mateo.id), {
+          alias: mateo.alias,
+          birthYear: mateo.birthYear,
+          cohort: mateo.cohort,
+          gradeMinedu: mateo.gradeMinedu,
+          activeDeviceId: mateo.activeDeviceId,
+          avatarUrl: mateo.avatarUrl,
+        });
 
-        // Seed policies
-        for (const [childId, pol] of Object.entries(INITIAL_POLICIES)) {
-          await setDoc(doc(db, 'families', this.family.id, 'policies', pol.id), {
-            childId,
-            name: pol.name,
-            allowedApps: pol.allowedApps,
-            dailyLimitMinutes: pol.dailyLimitMinutes,
-            schedule: pol.schedule,
-            version: pol.version,
-            updatedAt: serverTimestamp(),
-          });
-        }
+        // Seed policy for Mateo
+        const pol = INITIAL_POLICIES['child_mateo_01'];
+        await setDoc(doc(db, 'families', this.family.id, 'policies', pol.id), {
+          childId: 'child_mateo_01',
+          name: pol.name,
+          allowedApps: pol.allowedApps,
+          dailyLimitMinutes: pol.dailyLimitMinutes,
+          schedule: pol.schedule,
+          version: pol.version,
+          updatedAt: serverTimestamp(),
+        });
 
-        // Seed top-level devices
-        for (const [devId, dev] of Object.entries(INITIAL_DEVICES)) {
-          await setDoc(doc(db, 'devices', devId), {
-            familyId: dev.familyId,
-            childId: dev.childId,
-            model: dev.model,
-            osApiLevel: dev.osApiLevel,
-            provisioningMode: dev.provisioningMode,
-            appVersion: dev.appVersion,
-            policyVersion: dev.policyVersion,
-            activePolicy: dev.activePolicy,
-            lastSeenAt: serverTimestamp(),
-            batteryLevel: dev.batteryLevel || 84,
-            networkStatus: dev.networkStatus || 'online',
-          });
-        }
+        // Seed single real device: Redmi 9
+        const dev = INITIAL_DEVICES['dev_redmi9_mateo'];
+        await setDoc(doc(db, 'devices', 'dev_redmi9_mateo'), {
+          familyId: dev.familyId,
+          childId: dev.childId,
+          model: dev.model,
+          osApiLevel: dev.osApiLevel,
+          provisioningMode: dev.provisioningMode,
+          appVersion: dev.appVersion,
+          policyVersion: dev.policyVersion,
+          activePolicy: dev.activePolicy,
+          lastSeenAt: serverTimestamp(),
+          networkStatus: 'online',
+        });
       }
 
       this.isLiveConnected = true;
@@ -202,7 +196,7 @@ class RealZentryStore {
 
       this.listenToSelectedChildData();
     } catch (err) {
-      console.warn('Firestore initialization or connection:', err);
+      console.warn('Firestore initialization or connection error:', err);
     }
   }
 
@@ -253,6 +247,28 @@ class RealZentryStore {
       this.notify();
     });
     this.unsubs.push(unsubCommands);
+
+    // Listen to daily telemetry document if created by device: telemetry_daily/{deviceId}_{YYYYMMDD}
+    const todayStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    const telemRef = doc(db, 'telemetry_daily', `${device.id}_${todayStr}`);
+    const unsubTelem = onSnapshot(telemRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        this.telemetry[device.id] = {
+          deviceId: device.id,
+          date: data.date || todayStr,
+          appUsageMinutes: data.appUsageMinutes || {},
+          aiTurnCount: data.aiTurnCount || 0,
+          challengeCompletedCount: data.challengeCompletedCount || { logic: 0, creative: 0 },
+          policyViolationAttempts: data.policyViolationAttempts || 0,
+          sentimentIndex: data.sentimentIndex ?? null,
+          aiWeeklySummary: data.aiWeeklySummary || undefined,
+          updatedAt: new Date().toISOString(),
+        };
+        this.notify();
+      }
+    });
+    this.unsubs.push(unsubTelem);
   }
 
   // --- Real C&C Command Issuance in Firestore ---
@@ -275,7 +291,7 @@ class RealZentryStore {
       errorReason: null,
     });
 
-    // Also update the activePolicy desnormalized field in real devices/{deviceId} document
+    // Update activePolicy field in real devices/{deviceId} document
     const devRef = doc(db, 'devices', device.id);
     if (type === 'LOCK_NOW') {
       await updateDoc(devRef, {
@@ -301,8 +317,8 @@ class RealZentryStore {
       payload,
       issuedBy: this.family.parentUids[0] || 'uid_parent_master',
       issuedAt: new Date().toISOString(),
-      deliveredAt: new Date().toISOString(),
-      appliedAt: new Date().toISOString(),
+      deliveredAt: null,
+      appliedAt: null,
       status: 'pending',
       errorReason: null,
     };
