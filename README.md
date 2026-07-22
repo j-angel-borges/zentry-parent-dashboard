@@ -1,32 +1,102 @@
-# React + TypeScript + Vite
+# 🛡️ ZentryOS — Dashboard para Padres (PWA Web App)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![ZentryOS SSOT](https://img.shields.io/badge/SSOT-zentry--ssot-purple.svg)](https://github.com/j-angel-borges/zentry-ssot)
+[![Status](https://img.shields.io/badge/Status-Operational%20PWA-emerald.svg)]()
+[![GCP Firestore](https://img.shields.io/badge/Backend-GCP%20Firestore%20C%26C-amber.svg)]()
 
-Currently, two official plugins are available:
+Consola de Mando Remoto, Telemetría Cognitiva y Gestión de Políticas para el tutor legal en el ecosistema **ZentryOS**. Diseñado como una **Progressive Web App (PWA)** autónoma e instalable directamente en dispositivos **iOS y Android** sin requerir descarga desde tiendas públicas (App Store / Google Play), facilitando el canal de **Venta Directa con Aprovisionamiento en Punto de Venta**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Características Principales
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. ⚡ Consola de Mando Remoto (Kill-Switch C&C)
+- **Bloqueo/Desbloqueo Instantáneo**: Canal de Comando y Control (C&C) mediante Firebase Firestore con latencia auditada (&lt; 200 ms).
+- **Enforcement en Dispositivo**: El cliente nativo en Android (Device Owner) escucha el documento `devices/{deviceId}` y ejecuta `startLockTask()` en tiempo real.
+- **Motivo de Bloqueo Personalizable**: Transmite explicaciones pedagógicas (ej. *"Hora de cenar en familia"*, *"Pausa de pantalla"*).
 
-## Expanding the Oxlint configuration
+### 2. 🧠 Telemetría Cognitiva y Reporte GCP AI
+- **Pipeline Cloud Streaming**: Diseñado para ingestion vía Pub/Sub + almacenamiento analítico en BigQuery.
+- **Síntesis Pedagógica Vertex AI (Gemini 2.5)**: Genera resúmenes ejecutivos semanales identificando:
+  - *Temas de interés emergentes* (ej: dinosaurios, geometría, ecosistemas).
+  - *Nivel de comprensión lógica socrática*.
+  - *Patrones de atención y ausencia de ansiedad digital*.
+  - *Acciones recomendadas para la crianza*.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### 3. ⚙️ Gestión de Políticas y Allowlist (`setApplicationHidden`)
+- **Control de Bloatware**: Gestión visual de apps autorizadas (Google Workspace Docs, Slides, Sheets, Calculadora Socrática, Zentry Kiosk Launcher, Ajustes del Sistema).
+- **Presupuesto Diario de Tiempo**: Ajuste de minutos máximos permitidos por menor.
+- **Sincronización Monótona de Versión**: Incremento de `policyVersion` para resolución limpia de conflictos.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+### 4. 📲 Instalación Directa PWA (Sin Tiendas)
+- Soporte nativo manifest standalone en **iOS Safari** y **Android Chrome**.
+- Banner interactivo guiando la instalación paso a paso en el Smartphone del padre.
+
+---
+
+## 🏗️ Esquema Firestore (Alineado al SSOT)
+
+La aplicación implementa de forma estricta los esquemas físicos normativos definidos en `02-arquitectura-tecnica/modelo-de-datos-firestore.md` de [zentry-ssot](https://github.com/j-angel-borges/zentry-ssot):
+
+```text
+families/{familyId}                          # Cuenta parental (parentUids, plan, displayName)
+ ├── children/{childId}                      # Perfil del menor (alias, cohorte, birthYear, gradeMinedu)
+ └── policies/{policyId}                     # Política maestra (allowedApps, dailyLimitMinutes, version)
+
+devices/{deviceId}                           # Estado del dispositivo + copia desnormalizada activePolicy
+ └── commands/{commandId}                    # Cola C&C auditable (LOCK_NOW, UNLOCK, UPDATE_POLICY)
+
+telemetry_daily/{deviceId}_{yyyyMMdd}        # Contadores diarios y resumen sintético GCP AI
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Frontend**: React 19 + TypeScript + Vite 8
+- **Estilos**: Tailwind CSS v4 + Glassmorphism Design System (Liquid Glass)
+- **Iconografía**: Lucide React
+- **PWA**: Web App Manifest + Service Worker (`sw.js`)
+- **Backend / Real-time**: Firebase Firestore SDK v9 + GCP Cloud Infrastructure (Pub/Sub & BigQuery)
+
+---
+
+## 📲 Guía de Instalación para Padres / Asesores
+
+### En iPhone / iPad (iOS):
+1. Abre la URL en **Safari**.
+2. Toca el icono de **Compartir** en la barra inferior.
+3. Selecciona **"Añadir a la pantalla de inicio"**.
+
+### En Android (Chrome / Brave):
+1. Abre la URL en **Google Chrome**.
+2. Presiona los tres puntos superiores o el botón **"Instalar Web App"**.
+3. Selecciona **"Instalar aplicación"**.
+
+---
+
+## 💻 Desarrollo Local
+
+```bash
+# Clonar repositorio
+git clone https://github.com/j-angel-borges/zentry-parent-dashboard.git
+cd zentry-parent-dashboard
+
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
+npm run dev
+
+# Compilar paquete de producción
+npm run build
+```
+
+---
+
+## 🔗 Referencias SSOT
+
+- **Repositorio SSOT**: [j-angel-borges/zentry-ssot](https://github.com/j-angel-borges/zentry-ssot)
+- **Modelo de Datos Firestore**: `02-arquitectura-tecnica/modelo-de-datos-firestore.md`
+- **Telemetría e IA**: `02-arquitectura-tecnica/telemetria-gcp-ai.md`
+- **Plataforma Web-First**: `07-plataforma-microapps/README.md`
