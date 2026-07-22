@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sliders, AppWindow, Clock, Check, Plus, Save, Sparkles } from 'lucide-react';
 import type { Policy, Child, Device } from '../types/zentry';
-import { zentryStore } from '../services/zentryStore';
+import { zentryRealStore } from '../services/firebase';
 
 interface PolicyManagerProps {
   policy: Policy | null;
@@ -36,7 +36,7 @@ export const PolicyManager: React.FC<PolicyManagerProps> = ({ policy, child }) =
   const [message, setMessage] = useState<string | null>(null);
 
   const toggleApp = (pkg: string) => {
-    if (pkg === 'com.zentryos.launcher' || pkg === 'com.android.settings') return; // mandatory
+    if (pkg === 'com.zentryos.launcher' || pkg === 'com.android.settings') return;
     if (allowedApps.includes(pkg)) {
       setAllowedApps(allowedApps.filter((a) => a !== pkg));
     } else {
@@ -56,16 +56,16 @@ export const PolicyManager: React.FC<PolicyManagerProps> = ({ policy, child }) =
     setSaving(true);
     setMessage(null);
     try {
-      const updated = await zentryStore.updatePolicy({
+      const updated = await zentryRealStore.updatePolicy({
         allowedApps,
         dailyLimitMinutes: dailyMinutes,
       });
-      setMessage(`Política v${updated.version} guardada y transmitida a ${child.alias}!`);
+      setMessage(`Política v${updated.version} actualizada en Firestore real (zentryos) para ${child.alias}!`);
     } catch (err: any) {
-      setMessage(`Error al actualizar política: ${err.message}`);
+      setMessage(`Error al actualizar política en Firestore: ${err.message}`);
     } finally {
       setSaving(false);
-      setTimeout(() => setMessage(null), 4000);
+      setTimeout(() => setMessage(null), 5000);
     }
   };
 

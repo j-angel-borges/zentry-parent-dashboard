@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, Unlock, Zap, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 import type { Device, Child } from '../types/zentry';
-import { zentryStore } from '../services/zentryStore';
+import { zentryRealStore } from '../services/firebase';
 
 interface KillSwitchCardProps {
   device: Device | null;
@@ -22,24 +22,24 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
   }
 
   const isLocked = device.activePolicy.isLocked;
-  const latency = zentryStore.getLastLatencyMs();
+  const latency = zentryRealStore.getLastLatencyMs();
 
   const handleToggleLock = async () => {
     setLoading(true);
     setFeedback(null);
     try {
       if (isLocked) {
-        await zentryStore.issueCommand('UNLOCK', {});
-        setFeedback('Dispositivo desbloqueado al instante vía Firestore C&C');
+        await zentryRealStore.issueCommand('UNLOCK', {});
+        setFeedback('Comando UNLOCK escrito en Firestore real (devices/dev_redmi9_mateo/commands)');
       } else {
-        await zentryStore.issueCommand('LOCK_NOW', { lockReason });
-        setFeedback(`Dispositivo bloqueado inmediatamente: "${lockReason}"`);
+        await zentryRealStore.issueCommand('LOCK_NOW', { lockReason });
+        setFeedback(`Comando LOCK_NOW escrito en Firestore real: "${lockReason}"`);
       }
     } catch (err: any) {
-      setFeedback(`Error al emitir comando: ${err.message}`);
+      setFeedback(`Error al transmitir comando a Firestore: ${err.message}`);
     } finally {
       setLoading(false);
-      setTimeout(() => setFeedback(null), 5000);
+      setTimeout(() => setFeedback(null), 6000);
     }
   };
 
@@ -80,24 +80,23 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
             {latency !== null && (
               <span className="text-xs text-slate-600 flex items-center gap-1 bg-white/90 px-2.5 py-1 rounded-lg border border-slate-200 font-semibold shadow-xs">
                 <Zap className="w-3.5 h-3.5 text-amber-500" />
-                Latencia C&C: <strong className="text-slate-900">{latency}ms</strong>
+                Escritura Firestore: <strong className="text-slate-900">{latency}ms</strong>
               </span>
             )}
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-            Kill-Switch Remoto ({child.alias})
+            Kill-Switch Remoto Real ({child.alias})
           </h2>
 
           <p className="text-sm text-slate-600 leading-relaxed font-normal">
             {isLocked ? (
               <>
-                El dispositivo <strong className="text-slate-900">{device.model}</strong> está deshabilitado. La pantalla nativa muestra el bloqueo de ZentryOS con motivo:{' '}
-                <span className="text-rose-700 italic font-semibold">"{device.activePolicy.lockReason || lockReason}"</span>.
+                El documento en Firestore <code className="text-rose-700 font-mono text-xs bg-rose-50 px-1 py-0.5 rounded">devices/{device.id}</code> fue actualizado a <strong className="text-rose-700">isLocked: true</strong>. El cliente nativo en Android escucha este documento vía <code className="text-rose-700 font-mono text-xs">addSnapshotListener</code> para ejecutar <code className="text-rose-700 font-mono text-xs">startLockTask()</code>.
               </>
             ) : (
               <>
-                Envía una orden instantánea vía Firebase Firestore. El dispositivo responderá aplicando <code className="text-purple-700 bg-purple-50 px-1 py-0.5 rounded font-mono text-xs border border-purple-100">ZentryPolicyManager.startLockTask()</code> en tiempo real.
+                Al presionar el botón, se genera un documento real en la subcolección <code className="text-purple-700 font-mono text-xs bg-purple-50 px-1 py-0.5 rounded border border-purple-100">devices/{device.id}/commands</code> y se actualiza el estado en vivo en tu proyecto GCP <strong className="text-purple-900 font-bold">zentryos</strong>.
               </>
             )}
           </p>
@@ -113,7 +112,7 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
               />
               <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium px-1">
                 <Clock className="w-3.5 h-3.5 text-purple-600" />
-                Sincronización en &lt; 200ms
+                GCP Real-time Firestore C&C
               </div>
             </div>
           )}
@@ -140,7 +139,7 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Transmitiendo orden...</span>
+                <span>Transmitiendo a Firestore...</span>
               </>
             ) : isLocked ? (
               <>
@@ -155,7 +154,7 @@ export const KillSwitchCard: React.FC<KillSwitchCardProps> = ({ device, child })
             )}
           </button>
           <span className="text-[11px] text-slate-500 font-semibold">
-            Canal C&C Firestore • No-repudio por Parent UID
+            GCP Project: zentryos • Direct Firestore Write
           </span>
         </div>
       </div>

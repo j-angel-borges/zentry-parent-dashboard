@@ -7,6 +7,7 @@ interface HeaderProps {
   childrenList: Child[];
   selectedChild: Child;
   onSelectChild: (id: string) => void;
+  isLiveConnected: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
   childrenList,
   selectedChild,
   onSelectChild,
+  isLiveConnected,
 }) => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
@@ -65,8 +67,12 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                GCP Firestore C&C Conectado • {family.displayName}
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    isLiveConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                  }`}
+                ></span>
+                GCP Firestore LIVE (<strong className="text-slate-800">zentryos</strong>) • {family.displayName}
               </p>
             </div>
           </div>
