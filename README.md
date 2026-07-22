@@ -1,10 +1,13 @@
 # 🛡️ ZentryOS — Dashboard para Padres (PWA Web App)
 
+[![Live Demo](https://img.shields.io/badge/Vercel-zentry--parent--dashboard.vercel.app-brightgreen?logo=vercel)](https://zentry-parent-dashboard.vercel.app)
 [![ZentryOS SSOT](https://img.shields.io/badge/SSOT-zentry--ssot-purple.svg)](https://github.com/j-angel-borges/zentry-ssot)
 [![Status](https://img.shields.io/badge/Status-Operational%20PWA-emerald.svg)]()
 [![GCP Firestore](https://img.shields.io/badge/Backend-GCP%20Firestore%20C%26C-amber.svg)]()
 
 Consola de Mando Remoto, Telemetría Cognitiva y Gestión de Políticas para el tutor legal en el ecosistema **ZentryOS**. Diseñado como una **Progressive Web App (PWA)** autónoma e instalable directamente en dispositivos **iOS y Android** sin requerir descarga desde tiendas públicas (App Store / Google Play), facilitando el canal de **Venta Directa con Aprovisionamiento en Punto de Venta**.
+
+🌐 **URL de Producción en Vercel**: [https://zentry-parent-dashboard.vercel.app](https://zentry-parent-dashboard.vercel.app)
 
 ---
 
@@ -53,6 +56,7 @@ telemetry_daily/{deviceId}_{yyyyMMdd}        # Contadores diarios y resumen sint
 
 ## 🛠️ Stack Tecnológico
 
+- **Hosting / Deployment**: Vercel (Producción con CI/CD automático desde GitHub)
 - **Frontend**: React 19 + TypeScript + Vite 8
 - **Estilos**: Tailwind CSS v4 + Glassmorphism Design System (Liquid Glass)
 - **Iconografía**: Lucide React
@@ -63,40 +67,6 @@ telemetry_daily/{deviceId}_{yyyyMMdd}        # Contadores diarios y resumen sint
 
 ## 📲 Guía de Instalación para Padres / Asesores
 
-### En iPhone / iPad (iOS):
-1. Abre la URL en **Safari**.
-2. Toca el icono de **Compartir** en la barra inferior.
-3. Selecciona **"Añadir a la pantalla de inicio"**.
-
-### En Android (Chrome / Brave):
-1. Abre la URL en **Google Chrome**.
-2. Presiona los tres puntos superiores o el botón **"Instalar Web App"**.
-3. Selecciona **"Instalar aplicación"**.
-
----
-
-## 💻 Desarrollo Local
-
-```bash
-# Clonar repositorio
-git clone https://github.com/j-angel-borges/zentry-parent-dashboard.git
-cd zentry-parent-dashboard
-
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo
-npm run dev
-
-# Compilar paquete de producción
-npm run build
-```
-
----
-
-## 🔗 Referencias SSOT
-
-- **Repositorio SSOT**: [j-angel-borges/zentry-ssot](https://github.com/j-angel-borges/zentry-ssot)
-- **Modelo de Datos Firestore**: `02-arquitectura-tecnica/modelo-de-datos-firestore.md`
-- **Telemetría e IA**: `02-arquitectura-tecnica/telemetria-gcp-ai.md`
-- **Plataforma Web-First**: `07-plataforma-microapps/README.md`
+1. Ingresa a [https://zentry-parent-dashboard.vercel.app](https://zentry-parent-dashboard.vercel.app) en tu móvil.
+2. **En iPhone / iPad (iOS Safari)**: Toca "Compartir" -> "Añadir a la pantalla de inicio".
+3. **En Android (Chrome)**: Toca el menú de tres puntos -> "Instalar aplicación".
