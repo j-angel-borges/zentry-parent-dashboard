@@ -1,0 +1,22 @@
+{
+  "short_name": "Zentry Padres",
+  "name": "ZentryOS - Consola para Padres",
+  "icons": [
+    {
+      "src": "/pwa-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/pwa-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#06070a",
+  "theme_color": "#06070a",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "Consola Web PWA de Control Parental, Telemetría Cognitiva y Kill-Switch Remoto en Tiempo Real (ZentryOS / GCP Firestore)"
+}
